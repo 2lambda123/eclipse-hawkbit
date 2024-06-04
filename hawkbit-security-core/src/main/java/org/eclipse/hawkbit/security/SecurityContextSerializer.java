@@ -9,6 +9,7 @@
  */
 package org.eclipse.hawkbit.security;
 
+import io.github.pixee.security.ObjectInputFilters;
 import org.springframework.security.core.context.SecurityContext;
 
 import java.io.ByteArrayInputStream;
@@ -95,6 +96,7 @@ public interface SecurityContextSerializer {
             Objects.requireNonNull(securityContextString);
             try (final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(securityContextString));
                  final ObjectInputStream ois = new ObjectInputStream(bais)) {
+                ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
                 return (SecurityContext) ois.readObject();
             } catch (final IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
